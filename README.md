@@ -30,6 +30,11 @@ triples from the source checkpoint trace, with decoded values, finite and
 smallness proofs, four dot-product certificates, and the trace safety/error
 theorems.
 
+## Authors
+
+Arthur Freitas Ramos (maintainer), David Barros Hulak, and Ruy J. G. B. de
+Queiroz.
+
 ## IEEE backend boundary
 
 The Isabelle source imports a parameterized AFP bit-level IEEE-754 library.

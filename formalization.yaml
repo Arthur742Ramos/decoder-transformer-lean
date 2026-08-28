@@ -16,6 +16,8 @@ project:
     does not claim hardware-level bit identity.
   authors:
     - "Arthur Freitas Ramos"
+    - "David Barros Hulak"
+    - "Ruy J. G. B. de Queiroz"
   license: "Apache-2.0"
   responsible_maintainers:
     - "Arthur Freitas Ramos"
@@ -28,6 +30,8 @@ sources:
   - title: "Verified Cached Inference for Decoder Transformers"
     authors:
       - "Arthur Freitas Ramos"
+      - "David Barros Hulak"
+      - "Ruy J. G. B. de Queiroz"
     id: "https://github.com/Arthur742Ramos/isabelle-afp-monorepo/tree/b69c6e519c9c810019f3f92e94d6c01e56030947/projects/decoder-transformer-isabelle"
     type: "repository"
     location: "https://github.com/Arthur742Ramos/isabelle-afp-monorepo/tree/b69c6e519c9c810019f3f92e94d6c01e56030947/projects/decoder-transformer-isabelle"
@@ -133,5 +137,6 @@ alignment:
 
 acknowledgements: >-
   Mathlib and the Lean community; the Isabelle/HOL source development and its
-  author Arthur Freitas Ramos; and Vaswani et al. for the transformer
+  authors Arthur Freitas Ramos, David Barros Hulak, and Ruy J. G. B. de Queiroz;
+  and Vaswani et al. for the transformer
   architecture that motivates the terminology.
