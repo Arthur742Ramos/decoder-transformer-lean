@@ -1,0 +1,19 @@
+name: Lean verification
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: .
+          use-mathlib-cache: true
+      - run: lake build
+      - run: lake env lean DecoderTransformer/Examples.lean
+      - run: lake env lean Challenge.lean
+      - run: lake env lean Solution.lean

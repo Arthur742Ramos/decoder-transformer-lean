@@ -1,0 +1,21 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "DecoderTransformer.causalAttention_is_causal",
+    "DecoderTransformer.cachedAttention_eq_causalAttention",
+    "DecoderTransformer.finalCache_eq_fullProjections"
+  ],
+  "definition_names": [
+    "DecoderTransformer.prefixEq",
+    "DecoderTransformer.causal",
+    "DecoderTransformer.causalAttentionFrom",
+    "DecoderTransformer.causalAttention",
+    "DecoderTransformer.cacheOf",
+    "DecoderTransformer.cachedStep",
+    "DecoderTransformer.cachedRun",
+    "DecoderTransformer.cachedAttention"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}
