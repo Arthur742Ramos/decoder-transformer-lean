@@ -153,6 +153,15 @@ theorem gptNeoCachedStackStep_output
   rw [h]
   simp
 
+theorem gpt_neo_incremental_equals_full
+    {layers : List GPTNeoLayerParameters} {pref : Matrix ℝ}
+    {caches : GPTNeoTransformerCache} {x : Vector ℝ}
+    (hvalid : validGPTNeoStack layers)
+    (hmatch : gptNeoTransformerCacheMatches layers pref caches) :
+    (gptNeoCachedStackStep layers x caches).1 =
+      (gptNeoFullStack layers (pref ++ [x])).getLast? :=
+  gptNeoCachedStackStep_output hvalid hmatch
+
 theorem gptNeoCachedStackStep_cache
     {layers : List GPTNeoLayerParameters} {pref : Matrix ℝ}
     {caches : GPTNeoTransformerCache} {x : Vector ℝ}

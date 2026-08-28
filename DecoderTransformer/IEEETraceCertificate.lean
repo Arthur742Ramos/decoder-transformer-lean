@@ -122,9 +122,40 @@ theorem ieeeFmaDotTailCertificate {fmt : IEEEFormat}
               htailLengths hxLe hwLe
             simpa using hbound
           have htailValue :
-              |ieeeVal (ieeeFmaDot xs ws)| ≤ (xs.length : ℝ) := by
-            rw [ieeeVal_ieeeFmaDot]
-            exact htailAbsDot
+              |ieeeVal (ieeeFmaDot xs ws)| ≤ 2 * (xs.length : ℝ) := by
+            have htailError := ieeeFmaDot_error (epsilon := 1)
+              (by norm_num) htailSafe
+            have htailError0 :
+                |dotProduct (xs.map ieeeVal) (ws.map ieeeVal) -
+                    ieeeVal (ieeeFmaDot xs ws)| ≤
+                  ((xs.length.min ws.length : Nat) : ℝ) := by
+              simpa only [mul_one] using htailError
+            have htailError' :
+                |dotProduct (xs.map ieeeVal) (ws.map ieeeVal) -
+                    ieeeVal (ieeeFmaDot xs ws)| ≤ (xs.length : ℝ) := by
+              have hmin : ((xs.length.min ws.length : Nat) : ℝ) ≤
+                  (xs.length : ℝ) := by
+                exact_mod_cast Nat.min_le_left xs.length ws.length
+              exact htailError0.trans hmin
+            have hvalue :
+                |ieeeVal (ieeeFmaDot xs ws)| ≤
+                  |dotProduct (xs.map ieeeVal) (ws.map ieeeVal)| +
+                    |dotProduct (xs.map ieeeVal) (ws.map ieeeVal) -
+                      ieeeVal (ieeeFmaDot xs ws)| := by
+              calc
+                |ieeeVal (ieeeFmaDot xs ws)| =
+                    |dotProduct (xs.map ieeeVal) (ws.map ieeeVal) +
+                      -(dotProduct (xs.map ieeeVal) (ws.map ieeeVal) -
+                        ieeeVal (ieeeFmaDot xs ws))| := by
+                          congr 1
+                          ring
+                _ ≤ |dotProduct (xs.map ieeeVal) (ws.map ieeeVal)| +
+                    |-(dotProduct (xs.map ieeeVal) (ws.map ieeeVal) -
+                      ieeeVal (ieeeFmaDot xs ws))| := abs_add_le _ _
+                _ = |dotProduct (xs.map ieeeVal) (ws.map ieeeVal)| +
+                    |dotProduct (xs.map ieeeVal) (ws.map ieeeVal) -
+                      ieeeVal (ieeeFmaDot xs ws)| := by rw [abs_neg]
+            linarith [hvalue, htailAbsDot, htailError']
           have hxSmallHead : |ieeeVal x| < 1 := hxSmall x (by simp)
           have hwSmallHead : |ieeeVal w| < 1 := hwSmall w (by simp)
           have hproductSmall : |ieeeVal x * ieeeVal w| < 1 := by

@@ -89,6 +89,11 @@ theorem validLayer_rmsDenominator_ne_zero {p : DecoderLayerParameters}
   exact ne_of_gt (rmsDenominator_positive
     (validDecoderLayer_dimensions hp).2.2.2.2.2)
 
+theorem valid_layer_rms_denominator_nonzero {p : DecoderLayerParameters}
+    (hp : validDecoderLayer p) (x : Vector ℝ) :
+    rmsDenominator p.normEpsilon x ≠ 0 :=
+  validLayer_rmsDenominator_ne_zero hp x
+
 theorem validLayer_attentionScale_positive {p : DecoderLayerParameters}
     (hp : validDecoderLayer p) : 0 < Real.sqrt p.headDim := by
   have hhead : 0 < p.headDim := (validDecoderLayer_dimensions hp).2.2.1

@@ -97,6 +97,15 @@ theorem gptNeoBoundedCachedStackStep_output
   rw [h]
   simp
 
+theorem gpt_neo_bounded_incremental_equals_full
+    {layers : List GPTNeoLayerParameters} {pref : Matrix ℝ}
+    {caches : GPTNeoTransformerCache} {x : Vector ℝ}
+    (hvalid : validGPTNeoStack layers)
+    (hmatch : gptNeoBoundedTransformerCacheMatches layers pref caches) :
+    (gptNeoBoundedCachedStackStep layers x caches).1 =
+      (gptNeoFullStack layers (pref ++ [x])).getLast? :=
+  gptNeoBoundedCachedStackStep_output hvalid hmatch
+
 theorem gptNeoBoundedCachedStackStep_cache
     {layers : List GPTNeoLayerParameters} {pref : Matrix ℝ}
     {caches : GPTNeoTransformerCache} {x : Vector ℝ}

@@ -22,11 +22,15 @@ modern grouped-query/RoPE/SwiGLU stacks, dyadic refinement, IEEE-facing
 certificates, concrete fixtures, and the frozen TinyStories trace.
 
 The source Isabelle theory imports a parameterized AFP IEEE-754 library. The
-Lean dependency set does not contain that library, so the IEEE-facing Lean
-modules use an explicit abstract format with decoded finite real values and
-preserve the source certificate/refinement boundaries without claiming
-bit-identical FP16/FP32 execution. This limitation is recorded in the source
-comments and `PORT_COVERAGE.md`; it is not hidden by the Palomar metadata.
+Lean dependency set does not import that external AFP session, so the IEEE
+modules provide a self-contained field-level model: explicit formats and
+bitfields, normal/subnormal decoding, special-value classification, source-
+compatible FMA branches, and a closest-finite-value rounding theorem. The
+source leaves exact halfway-tie preference explicit, and the Lean model keeps
+that boundary. This is a kernel-checked semantic model of the source
+certificate boundary, not a claim of hardware bit-identical FP16/FP32
+execution. The scope is recorded in the source comments and
+`PORT_COVERAGE.md`; it is not hidden by the Palomar metadata.
 
 Source relationship:
 

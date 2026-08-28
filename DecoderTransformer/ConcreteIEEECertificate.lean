@@ -35,15 +35,25 @@ theorem concreteHiddenShape : vectorShape 4 concreteHidden := by
 
 @[simp] theorem concreteZeroFma :
     ieeeFma (0 : concreteBinary32) 0 0 = 0 := by
-  apply ieeeFloat_ext <;> simp [ieeeFma, ieeeFmaExact]
+  change ieeeFma (ieeeZero binary32Format) (ieeeZero binary32Format)
+      (ieeeZero binary32Format) = ieeeZero binary32Format
+  apply ieeeFloat_ext <;>
+    norm_num [ieeeFma, ieeeFmaExact, ieeeIsNaN, ieeeIsInfinity,
+      ieeeIsZero, ieeeSign, ieeeZeroSign, ieeeZero, binary32Format,
+      ieeeExponentMax, ieeeVal, ieeeSignValue] <;> rfl
+
+@[simp] theorem concreteZeroFmaExplicit :
+    ieeeFma (ieeeZero binary32Format) (ieeeZero binary32Format)
+      (ieeeZero binary32Format) = ieeeZero binary32Format := by
+  exact concreteZeroFma
 
 @[simp] theorem concreteZeroDot :
     ieeeFmaDot ([0, 0, 0] : Vector concreteBinary32) [0] = 0 := by
-  apply ieeeFloat_ext <;> simp [ieeeFmaDot, ieeeFma, ieeeFmaExact]
+  simp [ieeeFmaDot]
 
 @[simp] theorem concreteZeroDotThree :
     ieeeFmaDot ([0, 0, 0] : Vector concreteBinary32) [0, 0, 0] = 0 := by
-  apply ieeeFloat_ext <;> simp [ieeeFmaDot, ieeeFma, ieeeFmaExact]
+  simp [ieeeFmaDot]
 
 @[simp] theorem concrete_zero_dot_3 :
     ieeeFmaDot ([0, 0, 0] : Vector concreteBinary32) [0, 0, 0] = 0 :=
@@ -51,7 +61,7 @@ theorem concreteHiddenShape : vectorShape 4 concreteHidden := by
 
 @[simp] theorem concreteZeroDotTwo :
     ieeeFmaDot ([0, 0] : Vector concreteBinary32) [0, 0] = 0 := by
-  apply ieeeFloat_ext <;> simp [ieeeFmaDot, ieeeFma, ieeeFmaExact]
+  simp [ieeeFmaDot]
 
 @[simp] theorem concrete_zero_dot_2 :
     ieeeFmaDot ([0, 0] : Vector concreteBinary32) [0, 0] = 0 :=
@@ -59,15 +69,36 @@ theorem concreteHiddenShape : vectorShape 4 concreteHidden := by
 
 @[simp] theorem concreteZeroDotOne :
     ieeeFmaDot ([0] : Vector concreteBinary32) [0] = 0 := by
-  apply ieeeFloat_ext <;> simp [ieeeFmaDot, ieeeFma, ieeeFmaExact]
+  simp [ieeeFmaDot]
 
 @[simp] theorem concrete_zero_dot_1 :
     ieeeFmaDot ([0] : Vector concreteBinary32) [0] = 0 :=
   concreteZeroDotOne
 
+@[simp] theorem concreteZeroDotOneExplicit :
+    ieeeFmaDot [ieeeZero binary32Format] [ieeeZero binary32Format] =
+      ieeeZero binary32Format := by
+  change ieeeFmaDot ([0] : Vector concreteBinary32) [0] = 0
+  exact concreteZeroDotOne
+
+@[simp] theorem concreteZeroDotTwoExplicit :
+    ieeeFmaDot [ieeeZero binary32Format, ieeeZero binary32Format]
+      [ieeeZero binary32Format, ieeeZero binary32Format] =
+        ieeeZero binary32Format := by
+  change ieeeFmaDot ([0, 0] : Vector concreteBinary32) [0, 0] = 0
+  exact concreteZeroDotTwo
+
+@[simp] theorem concreteZeroDotThreeExplicit :
+    ieeeFmaDot [ieeeZero binary32Format, ieeeZero binary32Format,
+      ieeeZero binary32Format]
+      [ieeeZero binary32Format, ieeeZero binary32Format,
+        ieeeZero binary32Format] = ieeeZero binary32Format := by
+  change ieeeFmaDot ([0, 0, 0] : Vector concreteBinary32) [0, 0, 0] = 0
+  exact concreteZeroDotThree
+
 @[simp] theorem concreteEmptyDot :
     ieeeFmaDot ([] : Vector concreteBinary32) ([] : Vector concreteBinary32) = 0 := by
-  apply ieeeFloat_ext <;> simp [ieeeFmaDot]
+  simp [ieeeFmaDot]
 
 @[simp] theorem concreteZeroFinite :
     ieeeIsFinite (0 : concreteBinary32) := ieeeIsFinite_zero
@@ -78,41 +109,87 @@ theorem concreteHiddenShape : vectorShape 4 concreteHidden := by
 @[simp] theorem concreteZeroVal :
     ieeeVal (0 : concreteBinary32) = 0 := ieeeVal_zero
 
+@[simp] theorem concreteZeroExplicitFinite :
+    ieeeIsFinite (ieeeZero binary32Format) := by
+  change ieeeIsFinite (0 : concreteBinary32)
+  exact concreteZeroFinite
+
+@[simp] theorem concreteOneExplicitFinite :
+    ieeeIsFinite (ieeeOne binary32Format) := by
+  change ieeeIsFinite (1 : concreteBinary32)
+  exact concreteOneFinite
+
+@[simp] theorem concreteZeroExplicitVal :
+    ieeeVal (ieeeZero binary32Format) = 0 := by
+  change ieeeVal (0 : concreteBinary32) = 0
+  exact concreteZeroVal
+
+@[simp] theorem concreteOneExplicitVal :
+    ieeeVal (ieeeOne binary32Format) = 1 := by
+  change ieeeVal (1 : concreteBinary32) = 1
+  exact concreteOneVal
+
 @[simp] theorem concreteFmaZeroFinite :
     ieeeIsFinite (ieeeFma (0 : concreteBinary32) 0 0) := by
-  simp [ieeeFma, ieeeIsFinite]
+  rw [concreteZeroFma]
+  exact concreteZeroFinite
 
 @[simp] theorem concreteFmaZeroVal :
     ieeeVal (ieeeFma (0 : concreteBinary32) 0 0) = 0 := by
-  simp [ieeeFma, ieeeFmaExact, ieeeVal]
+  rw [concreteZeroFma]
+  exact concreteZeroVal
 
 theorem concreteThresholdGtOne :
     1 < ieeeThreshold binary32Format := by
-  norm_num [ieeeThreshold, binary32Format]
+  norm_num [ieeeThreshold, binary32Format, ieeeExponentMax, ieeeBias]
 
 theorem concreteZeroStep :
     ieeeFmaStepCertificate (ieeeThreshold binary32Format) 1
       (0 : concreteBinary32) 0 0 0 := by
   have hpos : 0 < ieeeThreshold binary32Format :=
     lt_trans (by norm_num) concreteThresholdGtOne
-  simp [ieeeFmaStepCertificate, ieeeRoundWitness, ieeeFmaExact, ieeeFma,
-    ieeeVal, ieeeIsFinite, concreteThresholdGtOne, hpos]
+  simp [ieeeFmaStepCertificate, ieeeRoundWitness, ieeeFmaExact,
+    concreteThresholdGtOne, hpos]
 
 theorem concreteOneStep :
     ieeeFmaStepCertificate (ieeeThreshold binary32Format) 1
       (1 : concreteBinary32) 1 0 1 := by
   have hpos : 0 < ieeeThreshold binary32Format :=
     lt_trans (by norm_num) concreteThresholdGtOne
-  simp [ieeeFmaStepCertificate, ieeeRoundWitness, ieeeFmaExact, ieeeFma,
-    ieeeVal, ieeeIsFinite, concreteThresholdGtOne, hpos]
+  simp [ieeeFmaStepCertificate, ieeeRoundWitness, ieeeFmaExact,
+    concreteThresholdGtOne, hpos]
 
 theorem concreteZeroLeftZeroStep :
     ieeeFmaStepCertificate (ieeeThreshold binary32Format) 1
       (1 : concreteBinary32) 0 0 0 := by
   have hpos : 0 < ieeeThreshold binary32Format :=
     lt_trans (by norm_num) concreteThresholdGtOne
-  simp [ieeeFmaStepCertificate, ieeeRoundWitness, ieeeFmaExact, ieeeFma,
-    ieeeVal, ieeeIsFinite, concreteThresholdGtOne, hpos]
+  simp [ieeeFmaStepCertificate, ieeeRoundWitness, ieeeFmaExact,
+    concreteThresholdGtOne, hpos]
+
+@[simp] theorem concreteZeroStepExplicit :
+    ieeeFmaStepCertificate (ieeeThreshold binary32Format) 1
+      (ieeeZero binary32Format) (ieeeZero binary32Format)
+      (ieeeZero binary32Format) (ieeeZero binary32Format) := by
+  change ieeeFmaStepCertificate (ieeeThreshold binary32Format) 1
+    (0 : concreteBinary32) 0 0 0
+  exact concreteZeroStep
+
+@[simp] theorem concreteOneStepExplicit :
+    ieeeFmaStepCertificate (ieeeThreshold binary32Format) 1
+      (ieeeOne binary32Format) (ieeeOne binary32Format)
+      (ieeeZero binary32Format) (ieeeOne binary32Format) := by
+  change ieeeFmaStepCertificate (ieeeThreshold binary32Format) 1
+    (1 : concreteBinary32) 1 0 1
+  exact concreteOneStep
+
+@[simp] theorem concreteZeroLeftZeroStepExplicit :
+    ieeeFmaStepCertificate (ieeeThreshold binary32Format) 1
+      (ieeeOne binary32Format) (ieeeZero binary32Format)
+      (ieeeZero binary32Format) (ieeeZero binary32Format) := by
+  change ieeeFmaStepCertificate (ieeeThreshold binary32Format) 1
+    (1 : concreteBinary32) 0 0 0
+  exact concreteZeroLeftZeroStep
 
 theorem concreteProjectionCertificate :
     ieeeProjectionCertificate (ieeeThreshold binary32Format) 1 2
@@ -125,13 +202,15 @@ theorem concreteProjectionCertificate :
   rcases cases with rfl | rfl
   · simp [concreteVocabularyWeights, concreteHidden, concreteCertificates,
       matrixColumns, nthOrZero, ieeeFmaDotCertificate,
-      ieeeFmaStepCertificate, ieeeRoundWitness, ieeeFmaDot,
-      ieeeFmaExact, ieeeFma, ieeeVal, ieeeIsFinite,
+      concreteZeroDotThreeExplicit, concreteZeroDotTwoExplicit,
+      concreteZeroDotOneExplicit, concreteZeroStepExplicit,
+      concreteOneStepExplicit, concreteZeroLeftZeroStepExplicit,
       concreteThresholdGtOne, hpos]
   · simp [concreteVocabularyWeights, concreteHidden, concreteCertificates,
       matrixColumns, nthOrZero, ieeeFmaDotCertificate,
-      ieeeFmaStepCertificate, ieeeRoundWitness, ieeeFmaDot,
-      ieeeFmaExact, ieeeFma, ieeeVal, ieeeIsFinite,
+      concreteZeroDotThreeExplicit, concreteZeroDotTwoExplicit,
+      concreteZeroDotOneExplicit, concreteZeroStepExplicit,
+      concreteOneStepExplicit, concreteZeroLeftZeroStepExplicit,
       concreteThresholdGtOne, hpos]
 
 theorem concreteProjectionError :

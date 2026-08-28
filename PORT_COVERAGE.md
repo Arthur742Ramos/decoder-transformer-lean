@@ -46,16 +46,22 @@ important Isabelle names where Lean naming differs.
 | Frozen_TinyStories_Trace | DecoderTransformer.FrozenTinyStoriesTrace | checked* |
 
 The asterisk records the IEEE backend boundary: these modules preserve the
-source predicates, decoded arithmetic, certificates, and checkpoint data,
-but the Lean repository does not import the source AFP's parameterized
-bit-level IEEE library. They therefore do not assert hardware-level or
-bit-identical FP32 behavior.
+source predicates, decoded arithmetic, certificates, and checkpoint data.
+Lean supplies a self-contained field-level IEEE model with normal/subnormal
+decoding, special-value classification, source-compatible finite FMA
+rounding, and the corresponding metric error theorem; it does not import the
+source AFP's parameterized bit-level library. The development therefore does
+not assert that Lean operations are hardware-level or bit-identical FP32
+execution. As in the source, the exact preference at a halfway rounding tie
+remains an explicit boundary of the model.
 
 The complete import root is `DecoderTransformer.lean`. `Examples.lean` is a
 small executable smoke-test module and is not an Isabelle theory.
 
-The declaration audit found 763 unique source definitions and 1,045 named
-source lemmas/theorems; their normalized names all have Lean counterparts.
-The additional Lean declarations are helper facts, backend interfaces, and
+The declaration audit found 314 named source data declarations (definitions,
+abbreviations, recursive functions, type synonyms, and records) and 1,100
+named theorem-like declarations (lemmas, theorems, and corollaries); after
+normalizing case and separators, every one has a Lean counterpart. The
+additional Lean declarations are helper facts, backend interfaces, and
 source-compatible aliases used to keep the port readable and independently
 checkable.

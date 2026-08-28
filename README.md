@@ -33,12 +33,18 @@ theorems.
 ## IEEE backend boundary
 
 The Isabelle source imports a parameterized AFP bit-level IEEE-754 library.
-The pinned Lean dependency set does not provide that library. The Lean port
-therefore exposes an explicit abstract IEEE format and decoded finite value,
-proves the same certificate/refinement interfaces, and makes no claim of
-bit-identical FP16/FP32 execution. The dyadic module provides an executable
-finite-grid error model; replacing the abstract IEEE backend with a bit-level
-implementation is a separate backend task, not an unrecorded assumption.
+The pinned Lean dependency set does not import that external AFP session. The
+Lean port instead contains a self-contained field-level model with explicit
+IEEE formats and bitfields. `ieeeVal` implements the normal and subnormal
+decoding formulas, the model classifies zeros, finite values, infinities, and
+NaNs, and the FMA layer preserves the source's special-value branches. Its
+finite rounding path selects a closest representable finite value and proves
+the corresponding metric error property. The source leaves the exact
+halfway-tie preference explicit; the Lean model preserves that same boundary.
+
+This is a kernel-checked IEEE semantic model for the source certificate
+boundary, not a claim that Lean executes hardware FP16/FP32 operations
+bit-for-bit. The dyadic module remains an executable finite-grid error model.
 
 ## Palomar surface
 

@@ -12,7 +12,8 @@ project:
     grouped-query attention, rotary embeddings, SwiGLU, dyadic refinement,
     IEEE-facing certificates, concrete fixtures, and the frozen TinyStories
     trace.  The structural theorem is extensional over mathematical values;
-    the IEEE-facing layer does not claim hardware-level bit identity.
+    the IEEE-facing layer is a self-contained field-level semantic model and
+    does not claim hardware-level bit identity.
   authors:
     - "Arthur Freitas Ramos"
   license: "Apache-2.0"
@@ -55,7 +56,9 @@ status:
     generation, projection stability, dyadic error bounds, IEEE-facing
     certificates, concrete checkpoint fixtures, and the frozen TinyStories
     trace.  The parameterized bit-level AFP IEEE library used by Isabelle is
-    represented by an explicit abstract decoded-value backend in Lean.
+    represented by a self-contained Lean field-level model with explicit
+    formats, bitfields, special values, and closest-finite-value rounding;
+    the exact halfway-tie preference remains explicit.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -91,11 +94,13 @@ fidelity:
   divergences: >-
     Isabelle lists and Lean lists are used for the same finite sequence model,
     with notation adapted to Lean.  The source's parameterized AFP IEEE-754
-    theory is not a dependency of this Lean project, so IEEEFormat and
-    IEEEFloat provide an explicit abstract decoded-real backend.  The frozen
-    TinyStories sign/exponent/mantissa payload and all source certificate
-    boundaries are retained, but the artifact makes no bit-identical FP16 or
-    FP32 execution claim.
+    theory is not imported by this Lean project, so IEEEFormat and IEEEFloat
+    provide a self-contained field-level backend with normal/subnormal
+    decoding, special-value classification, source-compatible FMA branches,
+    and a closest-finite-value metric theorem.  The frozen TinyStories
+    sign/exponent/mantissa payload and all source certificate boundaries are
+    retained.  The artifact makes no claim of hardware bit-identical FP16 or
+    FP32 execution, and preserves the source's explicit halfway-tie boundary.
 
 review:
   status: "self-assessed"

@@ -209,6 +209,21 @@ theorem concreteDyadicNextTokenLogitError
     (nextTokenLogits_lipschitz hW hbound)
     (dyadicNextTokenRoundingRelation hW) x
 
+theorem binary32_fraction_grid_next_token_logit_error
+    {hiddenError L : ℝ}
+    {exactModel floatingModel : input → Vector ℝ}
+    {modelDim vocabularySize : Nat} {W : Matrix ℝ}
+    (hmodel : floatingTransformerRelation hiddenError exactModel floatingModel)
+    (hW : matrixShape modelDim vocabularySize W)
+    (hbound : projectionL1Bound vocabularySize W L) (x : input) :
+    vectorErrorBound (L * hiddenError + (modelDim : ℝ) / 16777216)
+      (nextTokenLogits vocabularySize W (exactModel x))
+      (dyadicNextTokenLogits 23 vocabularySize W (floatingModel x)) := by
+  have h := concreteDyadicNextTokenLogitError
+    (roundingError := 0) (floatingLogits := fun _ => [])
+    (p := 23) hmodel hW hbound x
+  convert h using 1 <;> norm_num [dyadicUnitRoundoff, dyadicScale] <;> ring
+
 theorem cached_modern_dyadic_next_token_logit_error
     {p modelDim vocabularySize start : Nat}
     {layers : List ModernDecoderLayerParameters}

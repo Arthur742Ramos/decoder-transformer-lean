@@ -550,6 +550,21 @@ theorem cachedModernDecoderStackStep_correct
             · rw [hfull, ← hout]
               exact hstackCache
 
+theorem incremental_modern_decoder_equals_full
+    {layers : List ModernDecoderLayerParameters} {start : Nat}
+    {pref : Matrix ℝ} {caches : ModernTransformerCache} {x : Vector ℝ}
+    (hvalid : validModernStack layers)
+    (hmatch : modernTransformerCacheMatches layers start pref caches) :
+    (cachedModernDecoderStackStep layers (start + pref.length) x caches).1 =
+      (fullModernDecoderStack layers start (pref ++ [x])).getLast?.getD
+        ([] : Vector ℝ) := by
+  have h := (cachedModernDecoderStackStep_correct
+    (layers := layers) (start := start) (pref := pref) (caches := caches)
+    (x := x) hvalid hmatch).1
+  have hlast := congrArg
+    (fun z : Matrix ℝ => z.getLast?.getD ([] : Vector ℝ)) h
+  simpa using hlast.symm
+
 def emptyModernTransformerCache
     (layers : List ModernDecoderLayerParameters) : ModernTransformerCache :=
   layers.map emptyModernLayerCache
