@@ -3,17 +3,16 @@
 version: "v0.4"
 
 project:
-  name: "Lean formalization of exact decoder-transformer cache refinement"
+  name: "Lean formalization of decoder-transformer semantics and refinement"
   description: >-
-    A representation-independent Lean 4 and Mathlib formalization of the
-    structural cache-refinement theorem for decoder-only inference.  It
-    defines prefix-local sequence semantics and parametric causal attention,
-    then proves that incremental projected key-value caching from an empty
-    cache returns exactly the same mathematical sequence as full-prefix
-    causal evaluation.  It also proves that the final cache is precisely the
-    key and value projections of the processed input.  The result is an
-    extensional theorem over abstract queries, keys, values, and aggregators;
-    it does not claim hardware-level floating-point identity.
+    A complete Lean 4 and Mathlib translation of the 34-theory Isabelle/HOL
+    decoder-transformer development.  It covers prefix-local semantics,
+    exact attention, shaped tensors, residual decoder blocks, projected KV
+    caches, autoregressive generation, GPT-Neo full and windowed caches,
+    grouped-query attention, rotary embeddings, SwiGLU, dyadic refinement,
+    IEEE-facing certificates, concrete fixtures, and the frozen TinyStories
+    trace.  The structural theorem is extensional over mathematical values;
+    the IEEE-facing layer does not claim hardware-level bit identity.
   authors:
     - "Arthur Freitas Ramos"
   license: "Apache-2.0"
@@ -34,9 +33,11 @@ sources:
     relationship: "translates"
     note: >-
       This Lean development translates the core prefix-causality and
-      full-prefix versus projected KV-cache refinement boundary from the
-      cited Isabelle/HOL development.  It preserves the exact semantic
-      scope and does not claim a new mathematical result.
+      full-prefix versus projected KV-cache refinement boundary, together
+      with the architecture-specific, generation, numerical, certificate,
+      and checkpoint theory boundaries from the cited Isabelle/HOL
+      development.  It preserves the source attribution and does not claim a
+      new mathematical result.
 
 related_formalizations:
   - id: "https://arxiv.org/abs/1706.03762"
@@ -48,11 +49,13 @@ related_formalizations:
 
 status:
   scope: >-
-    The formalization covers prefix equality, causal sequence operators,
-    parametric causal attention, exact projected key-value cache updates, and
-    arbitrary finite cached runs.  It does not yet formalize tensor shapes,
-    a scalar softmax implementation, multi-head decoder blocks, rotary
-    position embeddings, GPT-Neo, or finite-precision error bounds.
+    The formalization covers all 34 source theory boundaries: prefix equality,
+    causal and exact attention, tensor shapes, multi-head and residual blocks,
+    legacy and modern incremental caches, GPT-Neo full and bounded stacks,
+    generation, projection stability, dyadic error bounds, IEEE-facing
+    certificates, concrete checkpoint fixtures, and the frozen TinyStories
+    trace.  The parameterized bit-level AFP IEEE library used by Isabelle is
+    represented by an explicit abstract decoded-value backend in Lean.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -79,26 +82,30 @@ automation:
         floating-point implementation behavior, and retain source attribution.
   spend_usd: "subscription-based"
   notes: >-
-    The formalization was developed with agent assistance.  The final
-    development modules contain no proof placeholders and are checked by the
-    Lean kernel; the Palomar Challenge file is intentionally statement-only.
+    The formalization was developed with agent assistance.  The development,
+    Challenge, and Solution modules contain no proof placeholders and are
+    checked by the Lean kernel; the Palomar comparator remains scoped to the
+    three core semantic theorems.
 
 fidelity:
   divergences: >-
     Isabelle lists and Lean lists are used for the same finite sequence model,
-    with notation adapted to Lean.  The Lean artifact currently translates
-    the generic Prefix_Sequences, Causal_Attention, and KV_Cache boundary;
-    architecture-specific and numerical Isabelle theories remain planned
-    follow-on ports.  No trained checkpoint is part of this artifact.
+    with notation adapted to Lean.  The source's parameterized AFP IEEE-754
+    theory is not a dependency of this Lean project, so IEEEFormat and
+    IEEEFloat provide an explicit abstract decoded-real backend.  The frozen
+    TinyStories sign/exponent/mantissa payload and all source certificate
+    boundaries are retained, but the artifact makes no bit-identical FP16 or
+    FP32 execution claim.
 
 review:
   status: "self-assessed"
   reviewers:
     - "none"
   notes: >-
-    The source correspondence, theorem statements, and proofs were checked
-    locally with the pinned Lean toolchain.  No external peer review is
-    claimed, and no Palomar submission or registration is asserted here.
+    The source correspondence, theorem statements, proofs, full import root,
+    and checkpoint payload were checked locally with the pinned Lean
+    toolchain.  No external peer review is claimed, and no Palomar submission
+    or registration is asserted here.
 
 alignment:
   namespace: "DecoderTransformer"

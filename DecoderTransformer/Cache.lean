@@ -46,6 +46,10 @@ theorem emptyCache_eq_cacheOf (K : α → k) (V : α → v) :
     emptyCache = cacheOf K V [] := by
   rfl
 
+@[simp] theorem empty_cache_is_cache_of (K : α → k) (V : α → v) :
+    emptyCache = cacheOf K V [] :=
+  emptyCache_eq_cacheOf K V
+
 theorem cachedStep_refinesFull (Q : α → q) (K : α → k) (V : α → v)
     (A : q → List k → List v → o) {pref : List α} {C : KVCache k v} {token : α}
     (hC : cacheMatches K V pref C) :
@@ -81,6 +85,11 @@ theorem cachedAttention_eq_causalAttention (Q : α → q) (K : α → k) (V : α
   have h := cachedRun_refinesFull Q K V A (xs := xs)
       (pref := []) (C := emptyCache) (by rfl)
   simpa [cachedAttention, causalAttention] using congrArg Prod.snd h
+
+theorem cached_attention_eq_full_attention (Q : α → q) (K : α → k) (V : α → v)
+    (A : q → List k → List v → o) (xs : List α) :
+    cachedAttention Q K V A xs = causalAttention Q K V A xs :=
+  cachedAttention_eq_causalAttention Q K V A xs
 
 theorem finalCache_eq_fullProjections (Q : α → q) (K : α → k) (V : α → v)
     (A : q → List k → List v → o) (xs : List α) :

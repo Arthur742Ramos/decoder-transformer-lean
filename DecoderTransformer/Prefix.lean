@@ -68,4 +68,15 @@ theorem causal_applyBlocks {Fs : List (List α → List α)}
       intro n xs ys hxy
       exact hrest n (F xs) (F ys) (hF n xs ys hxy)
 
+theorem causalI {F : List α → List β}
+    (hF : ∀ n xs ys, xs.take n = ys.take n →
+      (F xs).take n = (F ys).take n) : causal F := by
+  intro n xs ys hxy
+  exact hF n xs ys hxy
+
+theorem causalD {F : List α → List β} {n : Nat}
+    {xs ys : List α} (hF : causal F) (hxy : xs.take n = ys.take n) :
+    (F xs).take n = (F ys).take n := by
+  exact hF n xs ys hxy
+
 end DecoderTransformer
