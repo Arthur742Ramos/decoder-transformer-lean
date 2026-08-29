@@ -76,8 +76,8 @@ challenge is a self-contained independent statement surface for that core
 boundary. `Challenge.lean` and `Solution.lean` contain no proof holes or
 extra axioms beyond the permitted logical axioms.
 
-No Palomar intake, registration, or external submission is performed by this
-repository preparation.
+This preparation snapshot makes no claim of successful Palomar intake, review,
+or registration. Those are external steps tied to the exact submitted commit.
 
 ## Verification
 

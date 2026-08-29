@@ -40,9 +40,10 @@ the document-attribution update are recorded in
 `isabelle/SOURCE_PROVENANCE.md`; the Lean metadata points to this directory,
 so the source relationship is inspectable without access to another repo.
 
-No independent mathematical discovery is claimed. No Palomar intake,
-registration, authentication, or external submission is performed by this
-repository-preparation step.
+No independent mathematical discovery is claimed. This preparation snapshot
+makes no claim of successful Palomar intake, review, or registration. Those are
+external steps tied to the exact submitted commit and the author's explicit
+authorization.
 
 ## Local checks
 

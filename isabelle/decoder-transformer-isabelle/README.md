@@ -233,18 +233,20 @@ machine path is part of the checked-in configuration.
 
 ## Build
 
-From the monorepo root, after extracting the pinned AFP bundle described in
-`DEPENDENCIES.md`:
+After extracting the pinned AFP bundle described in `DEPENDENCIES.md`, build
+the project from its directory (or from the containing Isabelle/AFP monorepo):
 
 ```powershell
 $env:DECODER_TRANSFORMER_AFP_ROOT = "C:\path\to\decoder-transformer-afp"
-.\tools\build.ps1 -ProjectDir projects\decoder-transformer-isabelle `
-  -NoDocument -ExtraDir `
-  "$env:DECODER_TRANSFORMER_AFP_ROOT\Word_Lib", `
-  "$env:DECODER_TRANSFORMER_AFP_ROOT\IEEE_Floating_Point"
+Set-Location (Resolve-Path .).Path
+isabelle build -D . `
+  -d "$env:DECODER_TRANSFORMER_AFP_ROOT\Word_Lib" `
+  -d "$env:DECODER_TRANSFORMER_AFP_ROOT\IEEE_Floating_Point" `
+  Decoder_Transformer
 ```
 
-The project-local convenience wrapper performs the same dependency checks:
+When this directory is placed in the original Isabelle/AFP monorepo, the
+project-local convenience wrapper performs the same dependency checks:
 
 ```powershell
 cd projects\decoder-transformer-isabelle

@@ -22,12 +22,15 @@ project:
   responsible_maintainers:
     - "Arthur Freitas Ramos"
 
+repository:
+  role: "substantive-development"
+
 classification:
   arxiv: ["cs.LG", "cs.LO"]
   msc2020: ["68T07", "03B35"]
 
 sources:
-  - title: "Verified Cached Inference for Decoder Transformers"
+  - title: "Verified Decoder-Transformer Inference Semantics"
     authors:
       - "Arthur Freitas Ramos"
       - "David Barros Hulak"
@@ -46,10 +49,19 @@ sources:
       The theory files are unchanged in the vendored snapshot; the document
       metadata records the complete project authorship.  No new mathematical
       result is claimed.
-
-related_formalizations:
-  - id: "https://arxiv.org/abs/1706.03762"
-    relationship: "formalizes concepts from"
+  - title: "Attention Is All You Need"
+    authors:
+      - "Ashish Vaswani"
+      - "Noam Shazeer"
+      - "Niki Parmar"
+      - "Jakob Uszkoreit"
+      - "Llion Jones"
+      - "Aidan N. Gomez"
+      - "Lukasz Kaiser"
+      - "Illia Polosukhin"
+    id: "https://arxiv.org/abs/1706.03762"
+    type: "article"
+    relationship: "background"
     note: >-
       The attention terminology and decoder architecture are motivated by
       the transformer architecture of Vaswani et al.; this repository proves
@@ -68,10 +80,23 @@ status:
     the exact halfway-tie preference remains explicit.
   sorry_count: 0
   sorry_in_definitions: 0
-  axioms: []
+  axioms: ["propext"]
   main_results:
-    - "DecoderTransformer.cachedAttention_eq_causalAttention"
-    - "DecoderTransformer.finalCache_eq_fullProjections"
+    - declaration: "DecoderTransformer.causalAttention_is_causal"
+      file: "DecoderTransformer/Attention.lean"
+      sorry_count: 0
+      axioms: ["propext"]
+      comparator_config: "comparator.json"
+    - declaration: "DecoderTransformer.cachedAttention_eq_causalAttention"
+      file: "DecoderTransformer/Cache.lean"
+      sorry_count: 0
+      axioms: ["propext"]
+      comparator_config: "comparator.json"
+    - declaration: "DecoderTransformer.finalCache_eq_fullProjections"
+      file: "DecoderTransformer/Cache.lean"
+      sorry_count: 0
+      axioms: ["propext"]
+      comparator_config: "comparator.json"
 
 automation:
   methods:
@@ -116,8 +141,8 @@ review:
   notes: >-
     The source correspondence, theorem statements, proofs, full import root,
     and checkpoint payload were checked locally with the pinned Lean
-    toolchain.  No external peer review is claimed, and no Palomar submission
-    or registration is asserted here.
+    toolchain.  No external peer review is claimed.  This preparation snapshot
+    makes no claim of successful Palomar intake, review, or registration.
 
 alignment:
   namespace: "DecoderTransformer"

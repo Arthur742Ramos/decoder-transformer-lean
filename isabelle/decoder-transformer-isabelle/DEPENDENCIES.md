@@ -43,7 +43,7 @@ $env:DECODER_TRANSFORMER_AFP_ROOT = $afpRoot
 Get-FileHash .\afp-IEEE_Floating_Point-2026-02-06.tar.gz -Algorithm SHA256
 Get-FileHash .\afp-Word_Lib-2026-02-06.tar.gz -Algorithm SHA256
 
-cd Q:\src\isabelle-afp-monorepo-transformer\projects\decoder-transformer-isabelle
+Set-Location (Resolve-Path .).Path
 .\tools\build.ps1 -NoDocument
 ```
 

@@ -62,6 +62,18 @@ for path in sorted((root / "DecoderTransformer").glob("*.lean")):
     if re.search(r"^\s*(axiom|unsafe)\b", text, re.MULTILINE):
         raise SystemExit(f"error: axiom or unsafe declaration found in {path.relative_to(root)}")
 
+source_artifact = root / "isabelle" / "decoder-transformer-isabelle"
+if not source_artifact.is_dir() or source_artifact.is_symlink():
+    raise SystemExit("error: vendored Isabelle source artifact is missing or not a directory")
+theory_files = sorted(source_artifact.glob("*.thy"))
+if len(theory_files) != 34:
+    raise SystemExit(f"error: expected 34 vendored Isabelle theories, found {len(theory_files)}")
+for path in source_artifact.rglob("*"):
+    if path.is_symlink():
+        raise SystemExit(f"error: vendored Isabelle artifact contains a symlink: {path.relative_to(root)}")
+    if path.is_file() and "isabelle-afp-monorepo" in path.read_text(encoding="utf-8", errors="ignore"):
+        raise SystemExit(f"error: vendored Isabelle artifact contains a private monorepo path: {path.relative_to(root)}")
+
 print(f"Palomar package shape passed: Challenge {challenge.stat().st_size} bytes")
 PY
 
@@ -81,6 +93,15 @@ classification = data["classification"]
 abort "error: classification is incomplete" unless classification.is_a?(Hash) && classification["arxiv"].is_a?(Array) && classification["msc2020"].is_a?(Array)
 sources = data["sources"]
 abort "error: sources is empty" unless sources.is_a?(Array) && !sources.empty?
+source = sources.find { |entry| entry.is_a?(Hash) && entry["location"] == "isabelle/decoder-transformer-isabelle" }
+abort "error: public Isabelle source artifact is not recorded in sources" unless source
+abort "error: recorded Isabelle source artifact is missing" unless File.directory?(File.join(File.dirname(path), source["location"]))
+status = data["status"]
+results = status.is_a?(Hash) && status["main_results"]
+abort "error: status.main_results must be an array" unless results.is_a?(Array)
+results.each do |result|
+  abort "error: each main result must name a declaration and file" unless result.is_a?(Hash) && result["declaration"].is_a?(String) && result["file"].is_a?(String)
+end
 abort "error: automation metadata is incomplete" unless data["automation"].is_a?(Hash) && data["automation"]["methods"].is_a?(Array) && !data["automation"]["methods"].empty?
 abort "error: review metadata is incomplete" unless data["review"].is_a?(Hash) && data["review"]["status"].is_a?(String)
 puts "formalization.yaml shape passed."
