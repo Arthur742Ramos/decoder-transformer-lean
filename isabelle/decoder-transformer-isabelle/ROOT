@@ -1,0 +1,44 @@
+chapter AFP
+
+session Decoder_Transformer = HOL +
+  options [document = pdf, timeout = 1200]
+  sessions
+    IEEE_Floating_Point
+  theories
+    Prefix_Sequences
+    Causal_Attention
+    KV_Cache
+    Shaped_Tensors
+    Exact_Attention
+    Multi_Head_Attention
+    GPT_Neo_Components
+    GPT_Neo_Incremental
+ GPT_Neo_Windowed_Cache
+ GPT_Neo_Stack
+ GPT_Neo_Windowed_Stack
+ GPT_Neo_Model
+ Decoder_Block
+    Incremental_Decoder
+    Autoregressive_Generation
+    Numerical_Refinement
+    Model_Validity
+    Prompt_Cache
+    Projection_Stability
+    Rotary_Position_Embedding
+    Modern_Decoder_Components
+    Decoding_Policies
+ GPT_Neo_Generation
+ GPT_Neo_Tiny_Checkpoint
+ Modern_Incremental_Decoder
+    Modern_Generation
+    Dyadic_Finite_Precision
+    IEEE_754_Projection
+    Tiny_Decoder_Checkpoint
+    Imported_Decoder_Checkpoint
+    Two_Layer_GQA_Checkpoint
+    Concrete_IEEE_Certificate
+    IEEE_Trace_Certificate
+    Frozen_TinyStories_Trace
+  document_files
+    "root.tex"
+    "root.bib"

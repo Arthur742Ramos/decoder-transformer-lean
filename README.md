@@ -1,8 +1,9 @@
 # Decoder Transformer Lean
 
 This repository is the checked Lean 4 counterpart of the complete
-decoder-transformer Isabelle/HOL development at
-[isabelle-afp-monorepo/projects/decoder-transformer-isabelle](https://github.com/Arthur742Ramos/isabelle-afp-monorepo/tree/b69c6e519c9c810019f3f92e94d6c01e56030947/projects/decoder-transformer-isabelle).
+decoder-transformer Isabelle/HOL development.  The source formalization is
+included as a public, source-only artifact at
+[`isabelle/decoder-transformer-isabelle`](isabelle/decoder-transformer-isabelle).
 
 The source contains 34 Isabelle theories and 15,676 lines. Every source
 theory has a corresponding Lean module; the source-to-module map is in
@@ -34,6 +35,16 @@ theorems.
 
 Arthur Freitas Ramos (maintainer), David Barros Hulak, and Ruy J. G. B. de
 Queiroz.
+
+## Isabelle source artifact
+
+The directory
+[`isabelle/decoder-transformer-isabelle`](isabelle/decoder-transformer-isabelle)
+contains the 34 Isabelle theories, ROOT session description, documentation,
+checkpoint data, and source tooling used by the translation.  It is vendored
+from source revision `b69c6e519c9c810019f3f92e94d6c01e56030947`; the provenance
+and the small public attribution update to the document metadata are recorded
+in [`isabelle/SOURCE_PROVENANCE.md`](isabelle/SOURCE_PROVENANCE.md).
 
 ## IEEE backend boundary
 

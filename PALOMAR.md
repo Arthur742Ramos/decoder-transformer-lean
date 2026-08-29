@@ -32,9 +32,13 @@ certificate boundary, not a claim of hardware bit-identical FP16/FP32
 execution. The scope is recorded in the source comments and
 `PORT_COVERAGE.md`; it is not hidden by the Palomar metadata.
 
-Source relationship:
+Source artifact:
 
-<https://github.com/Arthur742Ramos/isabelle-afp-monorepo/tree/b69c6e519c9c810019f3f92e94d6c01e56030947/projects/decoder-transformer-isabelle>
+`isabelle/decoder-transformer-isabelle/` contains the public source-only
+snapshot of the Isabelle/HOL development.  Its pinned source revision and
+the document-attribution update are recorded in
+`isabelle/SOURCE_PROVENANCE.md`; the Lean metadata points to this directory,
+so the source relationship is inspectable without access to another repo.
 
 No independent mathematical discovery is claimed. No Palomar intake,
 registration, authentication, or external submission is performed by this

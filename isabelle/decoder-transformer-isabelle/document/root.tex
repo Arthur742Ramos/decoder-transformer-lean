@@ -1,0 +1,143 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{isabelle,isabellesym}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{pdfsetup}
+
+\urlstyle{rm}
+\isabellestyle{it}
+% Keep long Isabelle identifiers readable in the checked source listing.
+\def\isacharunderscore{\discretionary{-}{}{-}}
+\def\isacharunderscorekeyword{\discretionary{-}{}{-}}
+\emergencystretch=3em
+
+\begin{document}
+
+\title{Verified Cached Inference for Decoder Transformers}
+\author{Arthur Freitas Ramos \and David Barros Hulak \and
+  Ruy J. G. B. de Queiroz}
+\maketitle
+
+\begin{abstract}
+This entry formalizes exact-real inference semantics for decoder-only
+transformers and proves that incremental key--value caching refines
+full-prefix evaluation.  The refinement is lifted from causal attention
+through dimension-explicit multi-head attention, decoder blocks, and finite
+stacks.  It covers rotary grouped-query attention and GPT-Neo with global or
+sliding-window context, including projected per-head cache storage and finite
+greedy generation.  The modern path includes an explicit arbitrary-N-step
+theorem equating full-prefix first-argmax generation with the cached run under
+its generation-state invariant.  Separate numerical theorems bound selected
+dyadic and IEEE projection traces.
+\end{abstract}
+
+\tableofcontents
+
+\section{Overview}
+
+Decoder-only transformers generate tokens from left to right
+\cite{VaswaniEtAl2017}.  At a new
+position, causal attention needs the current query and the keys and values
+already produced by the prefix.  Caching those projections is an optimization
+only when it preserves the full-prefix result.  The principal theorem here
+states that preservation under an explicit cache invariant and also proves the
+corresponding cache-update invariant.
+
+\section{Formalization}
+
+The generic cache lemmas are instantiated with finite-list tensors, exact-real
+scaled dot-product softmax, normalization, feed-forward layers, residual
+blocks, and finite stacks.  The modern path models grouped-query attention
+and rotary position embeddings~\cite{AinslieEtAl2023,SuEtAl2024}, RMS
+normalization, and SwiGLU~\cite{Shazeer2020}.
+
+The GPT-Neo path models learned token and position embeddings, affine
+LayerNorm, GELU-New, biased ordinary multi-head attention, and global or
+sliding-window context.  Its implementation-level cache is a list of
+per-head projected key--value histories; an earlier normalized-input cache is
+retained as a semantic bridge for the refinement proof.  For a positive
+window, tail trimming is append-stable and idempotent.  The resulting
+theorems cover attention, blocks, stacks, prompt evaluation, logits, and
+finite greedy generation.  Both the modern and GPT-Neo paths expose N-step
+full-versus-cached first-argmax refinements.  Synthetic checkpoints exercise
+the integration.
+
+\section{Related work}
+
+Brucker and Stell formalize feed-forward neural networks in Isabelle/HOL,
+including equivalent graph- and layer-based models and TensorFlow.js model
+import~\cite{BruckerStell2023,NeuralNetworksAFP2025}.  That development
+provides general neural-network representations and verification properties;
+the present entry concentrates on autoregressive sequence semantics and the
+refinement of a concrete inference optimization.
+
+TorchLean gives Lean~4 a broader shared vocabulary for typed tensors, graph
+intermediate representations, execution, finite-precision semantics, and
+certificate checking~\cite{GeorgeEtAl2026TorchLean}.  The two efforts are
+complementary: this Isabelle development isolates the list-level theorem that
+projected per-head KV storage and bounded tail retention preserve decoder
+semantics, while its numerical results deliberately expose their finite
+precision boundary.
+
+\section{Numerical scope}
+
+The exact semantic theorems are complemented by numerical refinement results.
+Column L1 norms give a Lipschitz constant for the vocabulary projection.  A
+fixed-fraction dyadic fused-multiply-add kernel contributes at most
+$d/2^{p+1}$ per logit, while the AFP IEEE model gives a $d\epsilon$ bound when
+finite-value, range, and nearest-value witness conditions are supplied
+\cite{YuIEEE2013}.  Replayable certificates discharge those local obligations
+for selected projection traces.
+
+The public TinyStories-1M artifact~\cite{EldanLi2023TinyStoriesCheckpoint} is
+deliberately scoped: it certifies four selected layer-zero Q/K/V/MLP binary32
+rows with pinned provenance and replayable FMA witnesses.  It is not a
+complete attention, GELU, softmax, or all-layer floating-point replay.  The
+synthetic fixtures provide the complete semantic cache and generation
+integration independently of that limitation.
+
+\section{Trusted boundary}
+
+The formal claims have three deliberately separated trust boundaries.  First,
+the exact-real cache and generation theorems are Isabelle/HOL definitions and
+kernel-checked proofs over mathematical real vectors and matrices.  In
+particular, they prove semantic equality between full-prefix and cached
+execution; they do not assert that a particular CUDA, CPU, or PyTorch kernel
+has the same floating-point evaluation order.
+
+Second, checkpoint extraction is an external, reproducible boundary.
+\texttt{tools/import\_frozen\_checkpoint.py} validates the pinned configuration,
+checkpoint SHA-256 digest, tensor shapes, binary32 dtype, finite-value
+preconditions, and emits exact sign/exponent/fraction triples.  Isabelle then
+checks the generated data-bearing theory and its FMA certificate.  The
+importer and the hash comparison are not Isabelle theorems: they establish
+which bytes were extracted, while the kernel checks the mathematical
+consequences of the emitted fields.
+
+Third, the IEEE results use the AFP floating-point model's bounded-format
+\texttt{fmul\_add RNE} together with explicit finite, range, and nearest-value
+witnesses.  They are conditional certificate theorems, not a proof of
+hardware conformance or a repaired tie-breaking implementation.  The
+TinyStories result is therefore labelled a replayable local FMA certificate
+demonstration.  Its bound $64$ is the conservative sum of one unit budget for
+each of 64 certified steps, not an observed numerical-accuracy estimate or an
+end-to-end GPT-Neo error bound.
+
+\section{Checked Isabelle source}
+
+The remainder of this document is the Isabelle-generated source of the checked
+session.  It contains the definitions, lemmas, and proofs whose kernel-checked
+build establishes the results summarized above.
+
+\sloppy
+\input{session}
+\fussy
+
+\nocite{Shazeer2019}
+\bibliographystyle{abbrv}
+\bibliography{root}
+
+\end{document}

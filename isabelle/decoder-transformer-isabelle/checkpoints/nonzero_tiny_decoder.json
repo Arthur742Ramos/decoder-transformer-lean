@@ -1,0 +1,21 @@
+{
+  "name": "nonzero_tiny_decoder",
+  "provenance": "synthetic deterministic fixture for importer validation",
+  "query_head_count": 1,
+  "kv_head_count": 1,
+  "model_dimension": 2,
+  "head_dimension": 2,
+  "hidden_dimension": 2,
+  "norm_epsilon": 1.0,
+  "attention_gain": [1.0, 1.0],
+  "mlp_gain": [1.0, 1.0],
+  "query_weights": [[[1.0, 0.0], [0.0, 1.0]]],
+  "key_weights": [[[1.0, 0.0], [0.0, 1.0]]],
+  "value_weights": [[[1.0, 0.0], [0.0, 1.0]]],
+  "output_weights": [[1.0, 0.0], [0.0, 1.0]],
+  "gate_weights": [[1.0, 0.0], [0.0, 1.0]],
+  "up_weights": [[1.0, 0.0], [0.0, 1.0]],
+  "down_weights": [[1.0, 0.0], [0.0, 1.0]],
+  "embedding": [[1.0, 0.0], [0.0, 1.0]],
+  "vocabulary_weights": [[1.0, 0.0], [0.0, 1.0]]
+}

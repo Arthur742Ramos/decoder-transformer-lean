@@ -1,0 +1,19 @@
+[project]
+name = "Verified decoder-transformer inference semantics"
+blueprint = "blueprint.md"
+
+[isabelle]
+session = "Decoder_Transformer"
+version = "Isabelle2025-2"
+dirs = ["."]
+
+[afp]
+# Set root to the local pinned AFP dependency bundle before running `check`,
+# `compat`, or `doctor`; see DEPENDENCIES.md.  Do not commit a machine path.
+# root = "C:\\path\\to\\decoder-transformer-afp"
+entry = "IEEE_Floating_Point"
+required = true
+
+[output]
+build_dir = ".isabelle-blueprint/build"
+site_dir = ".isabelle-blueprint/site"

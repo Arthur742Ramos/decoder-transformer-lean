@@ -32,17 +32,20 @@ sources:
       - "Arthur Freitas Ramos"
       - "David Barros Hulak"
       - "Ruy J. G. B. de Queiroz"
-    id: "https://github.com/Arthur742Ramos/isabelle-afp-monorepo/tree/b69c6e519c9c810019f3f92e94d6c01e56030947/projects/decoder-transformer-isabelle"
+    id: "https://github.com/Arthur742Ramos/decoder-transformer-lean"
     type: "repository"
-    location: "https://github.com/Arthur742Ramos/isabelle-afp-monorepo/tree/b69c6e519c9c810019f3f92e94d6c01e56030947/projects/decoder-transformer-isabelle"
-    relationship: "translates"
+    location: "isabelle/decoder-transformer-isabelle"
+    relationship: "adapts"
     note: >-
-      This Lean development translates the core prefix-causality and
-      full-prefix versus projected KV-cache refinement boundary, together
-      with the architecture-specific, generation, numerical, certificate,
-      and checkpoint theory boundaries from the cited Isabelle/HOL
-      development.  It preserves the source attribution and does not claim a
-      new mathematical result.
+      The Isabelle/HOL source is vendored in this public repository at
+      isabelle/decoder-transformer-isabelle/ as a source-only snapshot from
+      revision b69c6e519c9c810019f3f92e94d6c01e56030947.  This Lean development
+      translates the core prefix-causality and full-prefix versus projected
+      KV-cache refinement boundary, together with the architecture-specific,
+      generation, numerical, certificate, and checkpoint theory boundaries.
+      The theory files are unchanged in the vendored snapshot; the document
+      metadata records the complete project authorship.  No new mathematical
+      result is claimed.
 
 related_formalizations:
   - id: "https://arxiv.org/abs/1706.03762"
