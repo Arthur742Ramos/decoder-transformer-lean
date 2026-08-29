@@ -43,9 +43,12 @@ sources:
       The Isabelle/HOL source is vendored in this public repository at
       isabelle/decoder-transformer-isabelle/ as a source-only snapshot from
       revision b69c6e519c9c810019f3f92e94d6c01e56030947.  This Lean development
-      translates the core prefix-causality and full-prefix versus projected
-      KV-cache refinement boundary, together with the architecture-specific,
-      generation, numerical, certificate, and checkpoint theory boundaries.
+      translates the full source boundary, with the Palomar comparator
+      selecting the modern grouped-query/RoPE/SwiGLU cached/full refinement
+      theorem, its multi-step greedy-generation composition, and the dyadic
+      next-token logit error theorem.  The architecture-specific, legacy,
+      GPT-Neo, certificate, and checkpoint theory boundaries are also retained
+      in the complete port.
       The theory files are unchanged in the vendored snapshot; the document
       metadata records the complete project authorship.  No new mathematical
       result is claimed.
@@ -65,7 +68,7 @@ sources:
     note: >-
       The attention terminology and decoder architecture are motivated by
       the transformer architecture of Vaswani et al.; this repository proves
-      a separate abstract cache-refinement theorem.
+      architecture-level cached/full refinement theorems.
 
 status:
   scope: >-
@@ -80,22 +83,22 @@ status:
     the exact halfway-tie preference remains explicit.
   sorry_count: 0
   sorry_in_definitions: 0
-  axioms: ["propext"]
+  axioms: ["propext", "Quot.sound", "Classical.choice"]
   main_results:
-    - declaration: "DecoderTransformer.causalAttention_is_causal"
-      file: "DecoderTransformer/Attention.lean"
+    - declaration: "DecoderTransformer.incremental_modern_decoder_equals_full"
+      file: "DecoderTransformer/ModernIncremental.lean"
       sorry_count: 0
-      axioms: ["propext"]
+      axioms: ["propext", "Quot.sound", "Classical.choice"]
       comparator_config: "comparator.json"
-    - declaration: "DecoderTransformer.cachedAttention_eq_causalAttention"
-      file: "DecoderTransformer/Cache.lean"
+    - declaration: "DecoderTransformer.modernGreedyGenerateStepsEqFull"
+      file: "DecoderTransformer/ModernGeneration.lean"
       sorry_count: 0
-      axioms: ["propext"]
+      axioms: ["propext", "Quot.sound", "Classical.choice"]
       comparator_config: "comparator.json"
-    - declaration: "DecoderTransformer.finalCache_eq_fullProjections"
-      file: "DecoderTransformer/Cache.lean"
+    - declaration: "DecoderTransformer.cached_modern_dyadic_next_token_logit_error"
+      file: "DecoderTransformer/DyadicFinitePrecision.lean"
       sorry_count: 0
-      axioms: ["propext"]
+      axioms: ["propext", "Quot.sound", "Classical.choice"]
       comparator_config: "comparator.json"
 
 automation:
@@ -112,15 +115,16 @@ automation:
         spend_usd: "subscription-based"
         hardware: "local macOS workstation"
       prompting_notes: >-
-        Translate the representation-independent prefix and cache theorem,
+        Select and translate architecture-level cache/full refinement results,
         preserve the distinction between exact extensional semantics and
-        floating-point implementation behavior, and retain source attribution.
+        finite-precision error bounds, and retain source attribution.
   spend_usd: "subscription-based"
   notes: >-
-    The formalization was developed with agent assistance.  The development,
-    Challenge, and Solution modules contain no proof placeholders and are
-    checked by the Lean kernel; the Palomar comparator remains scoped to the
-    three core semantic theorems.
+    The formalization was developed with agent assistance.  The library and
+    Solution module contain no proof placeholders and are checked by the Lean
+    kernel.  Challenge intentionally contains opaque typed declarations as an
+    independent Comparator surface; its holes are not part of the proved
+    development.
 
 fidelity:
   divergences: >-
@@ -139,29 +143,33 @@ review:
   reviewers:
     - "none"
   notes: >-
-    The source correspondence, theorem statements, proofs, full import root,
-    and checkpoint payload were checked locally with the pinned Lean
-    toolchain.  No external peer review is claimed.  This preparation snapshot
-    makes no claim of successful Palomar intake, review, or registration.
+    An earlier automated Palomar review found the former generic comparator
+    surface insufficiently research-substantive.  This corrected snapshot
+    replaces it with architecture-level cache/full refinement, generation,
+    and quantitative finite-precision results.  The source correspondence,
+    theorem statements, proofs, full import root, and checkpoint payload were
+    checked locally with the pinned Lean toolchain.  No external peer review
+    is claimed, and this snapshot makes no claim of successful Palomar intake,
+    review, or registration.
 
 alignment:
   namespace: "DecoderTransformer"
   statements:
-    - source: "causal_attention_is_causal"
-      lean: "DecoderTransformer.causalAttention_is_causal"
-      module: "DecoderTransformer.Attention"
+    - source: "incremental_modern_decoder_equals_full"
+      lean: "DecoderTransformer.incremental_modern_decoder_equals_full"
+      module: "DecoderTransformer.ModernIncremental"
       status: "proved"
-      note: "Causal attention preserves every equal input prefix."
-    - source: "cached_attention_eq_full_attention"
-      lean: "DecoderTransformer.cachedAttention_eq_causalAttention"
-      module: "DecoderTransformer.Cache"
+      note: "A valid modern cached stack step equals the last row of full-prefix evaluation."
+    - source: "modern_greedy_generate_steps_eq_full"
+      lean: "DecoderTransformer.modernGreedyGenerateStepsEqFull"
+      module: "DecoderTransformer.ModernGeneration"
       status: "proved"
-      note: "The empty-cache incremental run equals full-prefix causal attention."
-    - source: "final_cache_eq_full_projections"
-      lean: "DecoderTransformer.finalCache_eq_fullProjections"
-      module: "DecoderTransformer.Cache"
+      note: "The modern cache/full refinement composes over arbitrary greedy generation steps."
+    - source: "cached_modern_dyadic_next_token_logit_error"
+      lean: "DecoderTransformer.cached_modern_dyadic_next_token_logit_error"
+      module: "DecoderTransformer.DyadicFinitePrecision"
       status: "proved"
-      note: "The final cache contains exactly the processed key and value projections."
+      note: "The cached modern next-token logits satisfy the model-dimension dyadic error bound."
 
 acknowledgements: >-
   Mathlib and the Lean community; the Isabelle/HOL source development and its

@@ -64,17 +64,20 @@ bit-for-bit. The dyadic module remains an executable finite-grid error model.
 
 ## Palomar surface
 
-The Palomar comparator remains intentionally focused on the three core
-semantic theorems:
+The Palomar comparator selects three architecture-level refinement results:
 
-    DecoderTransformer.causalAttention_is_causal
-    DecoderTransformer.cachedAttention_eq_causalAttention
-    DecoderTransformer.finalCache_eq_fullProjections
+    DecoderTransformer.incremental_modern_decoder_equals_full
+    DecoderTransformer.modernGreedyGenerateStepsEqFull
+    DecoderTransformer.cached_modern_dyadic_next_token_logit_error
 
-The full port is included in the repository and built by CI; the comparator
-challenge is a self-contained independent statement surface for that core
-boundary. `Challenge.lean` and `Solution.lean` contain no proof holes or
-extra axioms beyond the permitted logical axioms.
+Together they state that the grouped-query/RoPE/SwiGLU cached decoder agrees
+with full-prefix evaluation, that this refinement composes across arbitrary
+greedy generation steps, and that the dyadic next-token logits satisfy an
+explicit model-dimension error bound. The full port is included in the
+repository and built by CI. `Challenge.lean` is an independent typed
+statement surface with intentionally opaque challenge definitions; the
+theorem and definition bodies are filled by the kernel-checked development in
+`Solution.lean` and are compared by `comparator.json`.
 
 This preparation snapshot makes no claim of successful Palomar intake, review,
 or registration. Those are external steps tied to the exact submitted commit.

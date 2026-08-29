@@ -4,17 +4,21 @@ This repository contains the full checked Lean translation of the 34-theory
 Isabelle/HOL decoder-transformer development. See `PORT_COVERAGE.md` for
 the complete source-to-module map.
 
-The Palomar comparator is deliberately scoped to the representation-
-independent semantic kernel:
+The Palomar comparator selects the following architecture-level refinement
+results:
 
-    DecoderTransformer.causalAttention_is_causal
-    DecoderTransformer.cachedAttention_eq_causalAttention
-    DecoderTransformer.finalCache_eq_fullProjections
+    DecoderTransformer.incremental_modern_decoder_equals_full
+    DecoderTransformer.modernGreedyGenerateStepsEqFull
+    DecoderTransformer.cached_modern_dyadic_next_token_logit_error
 
-The full library is still imported by `DecoderTransformer.lean` and built by
-CI. The challenge surface is self-contained, and its three theorems are now
-proved by structural induction rather than placeholders. `Solution.lean`
-imports the same kernel-checked development.
+They cover one modern grouped-query/RoPE/SwiGLU cache step, its composition
+over arbitrary greedy generation steps, and the corresponding dyadic
+next-token logit error bound. The full library is still imported by
+`DecoderTransformer.lean` and built by CI. `Challenge.lean` is a
+self-contained typed surface whose definitions and theorem bodies are
+intentionally opaque to the challenge; `Solution.lean` imports the concrete
+kernel-checked development, and the Comparator checks the exact interfaces
+and permitted axiom set.
 
 The architecture-specific modules cover shaped tensors, exact attention,
 multi-head and residual blocks, GPT-Neo full/windowed caches and generation,

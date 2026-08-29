@@ -2,19 +2,24 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "DecoderTransformer.causalAttention_is_causal",
-    "DecoderTransformer.cachedAttention_eq_causalAttention",
-    "DecoderTransformer.finalCache_eq_fullProjections"
+    "DecoderTransformer.incremental_modern_decoder_equals_full",
+    "DecoderTransformer.modernGreedyGenerateStepsEqFull",
+    "DecoderTransformer.cached_modern_dyadic_next_token_logit_error"
   ],
   "definition_names": [
-    "DecoderTransformer.prefixEq",
-    "DecoderTransformer.causal",
-    "DecoderTransformer.causalAttentionFrom",
-    "DecoderTransformer.causalAttention",
-    "DecoderTransformer.cacheOf",
-    "DecoderTransformer.cachedStep",
-    "DecoderTransformer.cachedRun",
-    "DecoderTransformer.cachedAttention"
+    "DecoderTransformer.validModernStack",
+    "DecoderTransformer.modernTransformerCacheMatches",
+    "DecoderTransformer.cachedModernDecoderStackStep",
+    "DecoderTransformer.fullModernDecoderStack",
+    "DecoderTransformer.modernGenerationCacheMatches",
+    "DecoderTransformer.firstArgmax",
+    "DecoderTransformer.modernGenerateSteps",
+    "DecoderTransformer.modernFullGenerateSteps",
+    "DecoderTransformer.matrixShape",
+    "DecoderTransformer.vectorErrorBound",
+    "DecoderTransformer.dyadicUnitRoundoff",
+    "DecoderTransformer.nextTokenLogits",
+    "DecoderTransformer.dyadicNextTokenLogits"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true

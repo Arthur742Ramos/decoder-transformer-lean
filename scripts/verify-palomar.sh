@@ -44,6 +44,15 @@ if comparator["challenge_module"] == comparator["solution_module"]:
     raise SystemExit("error: Challenge and Solution modules must differ")
 if not comparator["theorem_names"]:
     raise SystemExit("error: comparator.json theorem_names must be nonempty")
+expected_theorems = [
+    "DecoderTransformer.incremental_modern_decoder_equals_full",
+    "DecoderTransformer.modernGreedyGenerateStepsEqFull",
+    "DecoderTransformer.cached_modern_dyadic_next_token_logit_error",
+]
+if comparator["theorem_names"] != expected_theorems:
+    raise SystemExit(
+        "error: comparator surface must select the architecture-level refinement results"
+    )
 if comparator.get("enable_nanoda") is not True:
     raise SystemExit("error: comparator.json must enable NanoDa")
 if not set(comparator["permitted_axioms"]) <= {"propext", "Quot.sound", "Classical.choice"}:
