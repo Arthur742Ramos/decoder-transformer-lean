@@ -13,7 +13,7 @@ This is the Lean counterpart of Frozen_TinyStories_Trace.thy. The source
 checkpoint payload is retained as explicit sign/exponent/mantissa triples.
 The definitions below retain those fields as actual binary32 values and use
 the IEEE decoder from `IEEE754Projection` for the real view. The trace is
-therefore checked against the source formalization's finite-value and RNE
+therefore checked against the finite-value and RNE
 certificate boundary, while the source AFP's unresolved halfway preference
 remains explicit in the nearest-value selector.
 

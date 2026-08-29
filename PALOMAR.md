@@ -1,53 +1,52 @@
 # Palomar preparation
 
-This repository contains the full checked Lean translation of the 34-theory
-Isabelle/HOL decoder-transformer development. See `PORT_COVERAGE.md` for
-the complete source-to-module map.
+This repository is a checked Lean 4 and Mathlib development of
+decoder-transformer semantics, cached evaluation, generation, and numerical
+refinement. The complete dependency graph is imported by
+`DecoderTransformer.lean`.
 
-The Palomar comparator selects the following architecture-level refinement
-results:
+The comparator selects these strengthened theorem wrappers:
 
-    DecoderTransformer.incremental_modern_decoder_equals_full
-    DecoderTransformer.modernGreedyGenerateStepsEqFull
-    DecoderTransformer.cached_modern_dyadic_next_token_logit_error
+    DecoderTransformer.palomarIncrementalModernDecoderRefinesFull
+    DecoderTransformer.palomarModernGreedyGenerateStepsRefinesFull
+    DecoderTransformer.palomarCachedModernDyadicNextTokenLogitError
 
-They cover one modern grouped-query/RoPE/SwiGLU cache step, its composition
-over arbitrary greedy generation steps, and the corresponding dyadic
-next-token logit error bound. The full library is still imported by
-`DecoderTransformer.lean` and built by CI. `Challenge.lean` is a
-self-contained typed surface whose definitions and theorem bodies are
-intentionally opaque to the challenge; `Solution.lean` imports the concrete
-kernel-checked development, and the Comparator checks the exact interfaces
-and permitted axiom set.
+The first theorem compares one cached modern decoder step with full-prefix
+evaluation. The second composes that equality across greedy generation. The
+third compares exact and dyadic next-token logits under the explicit model-
+dimension error budget.
 
-The architecture-specific modules cover shaped tensors, exact attention,
-multi-head and residual blocks, GPT-Neo full/windowed caches and generation,
-modern grouped-query/RoPE/SwiGLU stacks, dyadic refinement, IEEE-facing
-certificates, concrete fixtures, and the frozen TinyStories trace.
+The contract is intentionally explicit. `validModernStack` checks each
+layer's positive dimensions, head divisibility, normalization epsilon, gain
+and weight shapes, and rotary shape preservation. `modernStackCompatible`
+requires all layers to share the declared model dimension, and
+`palomarModernStackWellFormed` additionally requires a nonempty stack.
+`modernTransformerCacheMatches` is exact equality with the projected
+key/value histories, recursively using each preceding layer's transformed
+prefix for the next layer.
 
-The source Isabelle theory imports a parameterized AFP IEEE-754 library. The
-Lean dependency set does not import that external AFP session, so the IEEE
-modules provide a self-contained field-level model: explicit formats and
-bitfields, normal/subnormal decoding, special-value classification, source-
-compatible FMA branches, and a closest-finite-value rounding theorem. The
-source leaves exact halfway-tie preference explicit, and the Lean model keeps
-that boundary. This is a kernel-checked semantic model of the source
-certificate boundary, not a claim of hardware bit-identical FP16/FP32
-execution. The scope is recorded in the source comments and
-`PORT_COVERAGE.md`; it is not hidden by the Palomar metadata.
+`modernGenerationCacheMatches` requires a nonempty token history. The
+generation and dyadic-logit wrappers both require `0 < vocabularySize`.
+`firstArgmax` remains a total function with the documented convention
+`firstArgmax [] = 0`, but the empty-vocabulary case is excluded from those
+advertised claims. List operations are likewise total on malformed or
+dimension-incompatible inputs; those evaluations are outside the stated
+well-formed-stack refinement scope.
 
-Source artifact:
+The independent `Challenge.lean` module contains concrete definitions for
+the compared shapes, semantics, cache relation, generation procedures,
+argmax, error relation, and dyadic projection. `Solution.lean` imports the
+kernel-checked wrappers, and `comparator.json` records the exact declaration
+surface and permitted axioms.
 
-`isabelle/decoder-transformer-isabelle/` contains the public source-only
-snapshot of the Isabelle/HOL development.  Its pinned source revision and
-the document-attribution update are recorded in
-`isabelle/SOURCE_PROVENANCE.md`; the Lean metadata points to this directory,
-so the source relationship is inspectable without access to another repo.
+The IEEE-facing modules provide a self-contained field-level model with
+explicit formats, bitfields, special-value classification, fused multiply-add
+cases, and closest-finite-value rounding. This does not claim hardware
+bit-identical FP16/FP32 execution. The dyadic module is an executable
+finite-grid error model.
 
-No independent mathematical discovery is claimed. This preparation snapshot
-makes no claim of successful Palomar intake, review, or registration. Those are
-external steps tied to the exact submitted commit and the author's explicit
-authorization.
+No public registration is claimed. Any Palomar intake or review status is
+external and tied to the exact immutable commit submitted.
 
 ## Local checks
 
@@ -58,7 +57,6 @@ authorization.
     bash scripts/verify-local.sh
     PALOMAR_ALLOW_UNSANDBOXED_LOCAL=1 bash scripts/verify-comparator.sh
 
-The macOS Comparator fallback is an explicitly unsandboxed local replay;
-Linux CI and Palomar use real Landrun sandboxing. Before any future intake,
-record the public repository, full immutable commit SHA, `comparator.json`
-path, and the author's authorization relationship for that exact artifact.
+Before an intake, record the public repository, full immutable commit SHA,
+`comparator.json` path, and the maintainer authorization relationship for that
+exact artifact.

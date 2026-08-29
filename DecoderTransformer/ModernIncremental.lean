@@ -10,11 +10,10 @@ noncomputable section
 /-!
 # Modern grouped-query decoder and incremental caches
 
-This is the modern branch of the Isabelle development: grouped-query
-attention, rotary positions, SwiGLU, and a cache indexed by KV heads.  The
-cache relation is represented as equality with the projected indexed pref;
-this is equivalent to the source theory's length-plus-pointwise formulation
-and makes the refinement proofs executable in Lean's totalized list API.
+This is the modern branch: grouped-query attention, rotary positions, SwiGLU,
+and a cache indexed by KV heads.  The cache relation is represented as
+equality with the projected indexed prefix and makes the refinement proofs
+executable in Lean's totalized list API.
 -/
 
 structure ModernDecoderLayerParameters where

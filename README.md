@@ -1,17 +1,11 @@
 # Decoder Transformer Lean
 
-This repository is the checked Lean 4 counterpart of the complete
-decoder-transformer Isabelle/HOL development.  The source formalization is
-included as a public, source-only artifact at
-[`isabelle/decoder-transformer-isabelle`](isabelle/decoder-transformer-isabelle).
-
-The source contains 34 Isabelle theories and 15,676 lines. Every source
-theory has a corresponding Lean module; the source-to-module map is in
-[PORT_COVERAGE.md](PORT_COVERAGE.md). The public library aggregator
-[DecoderTransformer.lean](DecoderTransformer.lean) imports the complete
+This repository contains a checked Lean 4 and Mathlib formalization of
+decoder-transformer semantics and refinement. The public library aggregator
+[`DecoderTransformer.lean`](DecoderTransformer.lean) imports the complete
 dependency graph.
 
-The port covers:
+The development covers:
 
 - prefix-local operators and exact causal attention/cache refinement;
 - shaped vectors, matrices, tensors, exact softmax attention, multi-head
@@ -27,60 +21,76 @@ The port covers:
   TinyStories trace payload.
 
 The frozen TinyStories module preserves all 448 sign/exponent/mantissa
-triples from the source checkpoint trace, with decoded values, finite and
-smallness proofs, four dot-product certificates, and the trace safety/error
-theorems.
+triples from the checkpoint trace, with decoded values, finite and smallness
+proofs, four dot-product certificates, and the trace safety/error theorems.
 
 ## Authors
 
 Arthur Freitas Ramos (maintainer), David Barros Hulak, and Ruy J. G. B. de
 Queiroz.
 
-## Isabelle source artifact
+## Semantic contract
 
-The directory
-[`isabelle/decoder-transformer-isabelle`](isabelle/decoder-transformer-isabelle)
-contains the 34 Isabelle theories, ROOT session description, documentation,
-checkpoint data, and source tooling used by the translation.  It is vendored
-from source revision `b69c6e519c9c810019f3f92e94d6c01e56030947`; the provenance
-and the small public attribution update to the document metadata are recorded
-in [`isabelle/SOURCE_PROVENANCE.md`](isabelle/SOURCE_PROVENANCE.md).
+The Palomar Challenge surface is concrete and auditable. Vectors, matrices,
+and rank-three tensors are finite lists with explicit shape predicates.
+`validModernStack` requires every layer to have positive dimensions, valid
+head divisibility, positive normalization epsilon, correctly shaped gains and
+weights, and shape-preserving rotary embeddings. `modernStackCompatible`
+additionally requires every layer to use the declared common model dimension.
+The advertised predicate `palomarModernStackWellFormed` requires a nonempty
+stack together with both conditions.
+
+`modernTransformerCacheMatches` recursively requires each cache to be exactly
+the projected key/value history of the transformed prefix for its layer;
+the prefix supplied to the next layer is the preceding layer's full output.
+`fullModernDecoderStack` evaluates causal grouped-query attention, rotary
+queries/keys, residual connections, and SwiGLU over the whole prefix.
+`cachedModernDecoderStackStep` appends the current projected key/value to each
+cache and applies the same layer computation to the current token.
+
+`modernGenerationCacheMatches` requires a nonempty token history and the exact
+cache relation. The generation theorem is stated only with
+`0 < vocabularySize`. The totalized implementation still defines
+`firstArgmax [] = 0`, but that empty-vocabulary default is outside the
+advertised generation claim. Similarly, all list operations remain total for
+dimension-incompatible inputs, while the advertised refinement claims are
+restricted to `palomarModernStackWellFormed` stacks.
+
+`matrixShape modelDim vocabularySize W` states the exact projection shape.
+`vectorErrorBound` means equal output lengths and a coordinatewise absolute
+error at most its epsilon. `dyadicUnitRoundoff p` is
+`(2 * 2^p)⁻¹`; `dyadicNextTokenLogits` is the vocabulary projection computed
+with nearest-grid fused multiply-add steps. The dyadic theorem also requires
+positive vocabulary and the stated matrix shape.
 
 ## IEEE backend boundary
 
-The Isabelle source imports a parameterized AFP bit-level IEEE-754 library.
-The pinned Lean dependency set does not import that external AFP session. The
-Lean port instead contains a self-contained field-level model with explicit
-IEEE formats and bitfields. `ieeeVal` implements the normal and subnormal
-decoding formulas, the model classifies zeros, finite values, infinities, and
-NaNs, and the FMA layer preserves the source's special-value branches. Its
-finite rounding path selects a closest representable finite value and proves
-the corresponding metric error property. The source leaves the exact
-halfway-tie preference explicit; the Lean model preserves that same boundary.
-
-This is a kernel-checked IEEE semantic model for the source certificate
-boundary, not a claim that Lean executes hardware FP16/FP32 operations
-bit-for-bit. The dyadic module remains an executable finite-grid error model.
+The IEEE-facing modules contain a self-contained field-level model with
+explicit formats and bitfields. `ieeeVal` implements normal and subnormal
+decoding; the model classifies zeros, finite values, infinities, and NaNs;
+and the FMA layer preserves the corresponding special-value cases. Its finite
+rounding path selects a closest representable finite value and proves the
+corresponding metric error property. This is a kernel-checked semantic model,
+not a claim that Lean executes hardware FP16/FP32 operations bit-for-bit. The
+dyadic module remains an executable finite-grid error model.
 
 ## Palomar surface
 
-The Palomar comparator selects three architecture-level refinement results:
+The comparator selects these three strengthened theorem wrappers:
 
-    DecoderTransformer.incremental_modern_decoder_equals_full
-    DecoderTransformer.modernGreedyGenerateStepsEqFull
-    DecoderTransformer.cached_modern_dyadic_next_token_logit_error
+    DecoderTransformer.palomarIncrementalModernDecoderRefinesFull
+    DecoderTransformer.palomarModernGreedyGenerateStepsRefinesFull
+    DecoderTransformer.palomarCachedModernDyadicNextTokenLogitError
 
-Together they state that the grouped-query/RoPE/SwiGLU cached decoder agrees
-with full-prefix evaluation, that this refinement composes across arbitrary
-greedy generation steps, and that the dyadic next-token logits satisfy an
-explicit model-dimension error bound. The full port is included in the
-repository and built by CI. `Challenge.lean` is an independent typed
-statement surface with intentionally opaque challenge definitions; the
-theorem and definition bodies are filled by the kernel-checked development in
-`Solution.lean` and are compared by `comparator.json`.
+Together they state cached/full refinement for a well-formed modern stack,
+its composition across positive-vocabulary greedy generation steps, and the
+corresponding positive-vocabulary dyadic next-token logit error bound.
+`Challenge.lean` contains the independent concrete contract and theorem
+declarations; `Solution.lean` imports the kernel-checked wrappers. The exact
+interfaces and permitted axiom set are recorded in `comparator.json`.
 
-This preparation snapshot makes no claim of successful Palomar intake, review,
-or registration. Those are external steps tied to the exact submitted commit.
+This repository makes no claim of successful Palomar intake, review, or
+registration. Those are external steps tied to the exact submitted commit.
 
 ## Verification
 
@@ -91,7 +101,4 @@ With the pinned Lean toolchain and Mathlib revision:
     lake env lean Challenge.lean
     lake env lean Solution.lean
     bash scripts/verify-local.sh
-
-The source attribution and exact checkpoint provenance are retained in the
-module comments, `formalization.yaml`, `PALOMAR.md`, and
-`PORT_COVERAGE.md`.
+    PALOMAR_ALLOW_UNSANDBOXED_LOCAL=1 bash scripts/verify-comparator.sh

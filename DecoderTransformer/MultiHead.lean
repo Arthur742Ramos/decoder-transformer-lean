@@ -7,9 +7,8 @@ noncomputable section
 /-!
 # Exact multi-head causal attention
 
-The Isabelle tensor lookup is partial but is always used under a head-bound
-proof.  Lean's definitions are totalized with `List.getD`; the shape theorems
-below establish the same results on every well-formed parameter tensor.
+Tensor lookup is totalized with `List.getD`; the shape theorems below establish
+the intended results on every well-formed parameter tensor.
 -/
 
 def tensorMatrixAt (T : Tensor3 ℝ) (h : Nat) : Matrix ℝ := T.getD h []

@@ -2,12 +2,14 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "DecoderTransformer.incremental_modern_decoder_equals_full",
-    "DecoderTransformer.modernGreedyGenerateStepsEqFull",
-    "DecoderTransformer.cached_modern_dyadic_next_token_logit_error"
+    "DecoderTransformer.palomarIncrementalModernDecoderRefinesFull",
+    "DecoderTransformer.palomarModernGreedyGenerateStepsRefinesFull",
+    "DecoderTransformer.palomarCachedModernDyadicNextTokenLogitError"
   ],
   "definition_names": [
     "DecoderTransformer.validModernStack",
+    "DecoderTransformer.modernStackCompatible",
+    "DecoderTransformer.palomarModernStackWellFormed",
     "DecoderTransformer.modernTransformerCacheMatches",
     "DecoderTransformer.cachedModernDecoderStackStep",
     "DecoderTransformer.fullModernDecoderStack",

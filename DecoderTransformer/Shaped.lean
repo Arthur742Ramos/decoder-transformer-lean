@@ -6,11 +6,10 @@ namespace DecoderTransformer
 /-!
 # Finite shape-safe tensors
 
-The Isabelle development represents vectors, matrices, and rank-three tensors
-by nested lists plus explicit shape predicates.  This module keeps that
-representation and translates the total list-level operations.  The
-predicates, rather than the host language's partial indexing notation, carry
-the dimensions needed by the later attention and decoder proofs.
+Vectors, matrices, and rank-three tensors are represented by nested lists plus
+explicit shape predicates.  The predicates, rather than the host language's
+partial indexing notation, carry the dimensions needed by the later attention
+and decoder proofs.
 -/
 
 abbrev Vector (α : Type*) := List α

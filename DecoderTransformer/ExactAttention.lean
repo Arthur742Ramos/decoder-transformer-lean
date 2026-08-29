@@ -13,7 +13,7 @@ noncomputable section
 This is the real-valued attention layer from `Exact_Attention.thy`.  The
 softmax is total, while its normalization and positivity facts correctly
 require a nonempty key history.  Out-of-range value coordinates are read as
-zero; all well-shaped uses therefore agree with Isabelle's totalized list
+zero; all well-shaped uses therefore agree with the intended totalized list
 lookup.
 -/
 

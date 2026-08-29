@@ -24,6 +24,7 @@ import DecoderTransformer.GPTNeoGeneration
 import DecoderTransformer.ModernIncremental
 import DecoderTransformer.ModernGeneration
 import DecoderTransformer.DyadicFinitePrecision
+import DecoderTransformer.PalomarSurface
 import DecoderTransformer.IEEE754Projection
 import DecoderTransformer.IEEETraceCertificate
 import DecoderTransformer.ConcreteIEEECertificate

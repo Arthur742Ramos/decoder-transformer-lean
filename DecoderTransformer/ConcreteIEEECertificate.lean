@@ -8,7 +8,7 @@ noncomputable section
 /-!
 # Concrete binary32 projection certificate
 
-The Isabelle fixture uses the zero/one portion of its binary32 model.  The
+The fixture uses the zero/one portion of its binary32 model.  The
 same certificate is retained here over the explicit decoded IEEE backend.
 It is deliberately a small projection witness, not a trained-model claim.
 -/
